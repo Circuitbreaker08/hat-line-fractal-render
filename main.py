@@ -7,14 +7,26 @@ FPS = 25
 GENS = 1
 GEN_FRAMES = 50
 
-def progress_point(a: tuple, b: tuple, progress: int):
-    return (a[0] * progress + b[0] * (1 - progress), a[1] * progress + b[1] * (1 - progress))
-
 black = Image.new("RGB", (1920, 1080), (0, 0, 0))
 video = cv2.VideoWriter("video.mp4", cv2.VideoWriter_fourcc(*'mp4v'), FPS, (1920, 1080))
 
 points = [(0, 0), (1, 0)]
-next_points = []
+points_new = []
+
+def progress_point(a: tuple, b: tuple, progress: int):
+    return (a[0] * progress + b[0] * (1 - progress), a[1] * progress + b[1] * (1 - progress))
+
+def gen_bump(a, b, length):
+  length *= 1/3
+  
+  points_new.append((
+    (a[1] > b[1]) * length + -(a[1] < b[1]) * length,
+    (a[1] < b[1]) * length + -(a[1] > b[1]) * length
+  ))
+  points_new.append(
+    points_new[-1][0],
+    points_new[-1][1]
+  )
 
 for generation in range(GENS):
     for point in range(len(points - 1)):
@@ -41,14 +53,14 @@ for generation in range(GENS):
             points[point + 1]
         ))
 
-        next_points.append(points[point])
-        next_points.append(base_1)
-        next_points.append((
+        points_new.append(points[point])
+        points_new.append(base_1)
+        points_new.append((
             {False: base_1}[points[point][0] == base_1],
             {False: base_1}[points[point][0] == base_1]
         ))
-        next_points.append(({}, {}))
-        next_points.append(base_2)
+        points_new.append(({}, {}))
+        points_new.append(base_2)
     for frame in range(GEN_FRAMES):
         pass
 
