@@ -62,8 +62,12 @@ for generation in range(GENS):
         points_final.append(base_1)
         gen_bump(base_1, base_2)
         points_final.append(base_2)
-        print(points_new)
-        print(points_final)
+    
+    points_new.append(points[-1])
+    points_final.append(points[-1])
+
+    print(points_new)
+    print(points_final)
 
     for frame in range(GEN_FRAMES):
         pass
